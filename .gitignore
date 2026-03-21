@@ -1,0 +1,16 @@
+# Ignore data
+data/
+
+# Ignore trained models
+models/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
