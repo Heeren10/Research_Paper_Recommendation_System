@@ -1,0 +1,10 @@
+https://www.kaggle.com/datasets/sumitm004/arxiv-scientific-research-papers-dataset
+
+Coulmns taken:
+title
+category
+category_code
+published_date
+authors
+first_author
+summary
