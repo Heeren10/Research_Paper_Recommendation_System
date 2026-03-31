@@ -14,3 +14,12 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Virtual Environment
+backend/backend-env/
+venv/
+env/
+
+# Flutter
+flutter_app/build/
+flutter_app/.dart_tool/
