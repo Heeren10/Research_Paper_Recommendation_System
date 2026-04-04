@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 
 class DetailScreen extends StatefulWidget {
   final Map paper;
+  final int userId;
 
-  const DetailScreen({super.key, required this.paper});
+  const DetailScreen({super.key, required this.paper, required this.userId});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -36,6 +38,24 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    checkIfSaved();
+  }
+
+  void checkIfSaved() async {
+    final list = await ApiService.getLibrary(widget.userId);
+
+    for (var p in list) {
+      if (p["title"] == widget.paper["titles"]) {
+        setState(() {
+          isSaved = true;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final paper = widget.paper;
 
@@ -50,10 +70,14 @@ class _DetailScreenState extends State<DetailScreen> {
         actions: [
           IconButton(
             icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border),
-            onPressed: () {
+            onPressed: () async {
               setState(() {
                 isSaved = !isSaved;
               });
+
+              if (isSaved) {
+                await ApiService.savePaper(widget.userId, paper);
+              }
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

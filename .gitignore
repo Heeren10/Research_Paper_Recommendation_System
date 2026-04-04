@@ -1,25 +1,48 @@
-# Ignore data
+# =========================
+# DATA & MODELS
+# =========================
 data/
-
-# Ignore trained models
 models/
+*.pkl
+*.h5
+*.pt
+
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
 
 # Jupyter
 .ipynb_checkpoints/
 
-# Python cache
-__pycache__/
-*.pyc
+# Virtual Environment
+venv/
+env/
+backend-env/
+backend/backend-env/
 
-# OS files
+# =========================
+# FLUTTER
+# =========================
+flutter_app/build/
+flutter_app/.dart_tool/
+flutter_app/.idea/
+flutter_app/.packages
+flutter_app/pubspec.lock
+
+# =========================
+# OS FILES
+# =========================
 .DS_Store
 Thumbs.db
 
-# Virtual Environment
-backend/backend-env/
-venv/
-env/
-
-# Flutter
-flutter_app/build/
-flutter_app/.dart_tool/
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/

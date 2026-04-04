@@ -3,8 +3,9 @@ import 'detail_screen.dart';
 
 class ResultsScreen extends StatelessWidget {
   final Map data;
+  final int userId;
 
-  ResultsScreen({required this.data});
+  ResultsScreen({required this.data, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,9 @@ class ResultsScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => DetailScreen(paper: paper)),
+                MaterialPageRoute(
+                  builder: (_) => DetailScreen(paper: paper, userId: userId),
+                ),
               );
             },
           );
