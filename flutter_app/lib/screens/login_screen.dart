@@ -46,19 +46,41 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(title: Text("Login")),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(20),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text(
+              "Welcome Back 👋",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+
             TextField(
               controller: emailController,
               decoration: InputDecoration(labelText: "Email"),
             ),
+            SizedBox(height: 15),
+
             TextField(
               controller: passwordController,
               decoration: InputDecoration(labelText: "Password"),
+              obscureText: true,
             ),
+
             SizedBox(height: 20),
-            ElevatedButton(onPressed: login, child: Text("Login")),
+
+            ElevatedButton(
+              onPressed: login,
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text("Login"),
+            ),
+
             TextButton(
               onPressed: () {
                 Navigator.push(

@@ -18,17 +18,33 @@ class ResultsScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final paper = papers[index];
 
-          return ListTile(
-            title: Text(paper["titles"]),
-            subtitle: Text(paper["authors"].toString()),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => DetailScreen(paper: paper, userId: userId),
-                ),
-              );
-            },
+          return Card(
+            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 4,
+            child: ListTile(
+              contentPadding: EdgeInsets.all(12),
+              title: Text(
+                paper["titles"],
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                paper["authors"].toString(),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DetailScreen(paper: paper, userId: userId),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

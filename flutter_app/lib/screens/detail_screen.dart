@@ -13,7 +13,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   bool isSaved = false; // ⭐ toggle state
-
+  int? paperId;
   // 🔥 Reusable label-value widget
   Widget infoText(String label, String value) {
     return Padding(
@@ -71,77 +71,111 @@ class _DetailScreenState extends State<DetailScreen> {
           IconButton(
             icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border),
             onPressed: () async {
-              setState(() {
-                isSaved = !isSaved;
-              });
-
-              if (isSaved) {
-                await ApiService.savePaper(widget.userId, paper);
+              if (widget.userId == 0) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("Please login first")));
+                return;
               }
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isSaved ? "Saved to library ⭐" : "Removed from library",
-                  ),
-                ),
-              );
+              if (!isSaved) {
+                // ✅ SAVE
+                paperId = await ApiService.savePaper(widget.userId, paper);
+
+                setState(() {
+                  isSaved = true;
+                });
+
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("Saved to library⭐")));
+              } else {
+                // ❌ DELETE
+
+                if (paperId != null) {
+                  // 🔥 fast way
+                  await ApiService.deletePaper(paperId!);
+                } else {
+                  // 🔥 fallback (important)
+                  final list = await ApiService.getLibrary(widget.userId);
+
+                  final found = list.firstWhere(
+                    (p) => p["title"] == paper["titles"],
+                    orElse: () => null,
+                  );
+                  print("Deleting paperId: $paperId");
+                  if (found != null) {
+                    await ApiService.deletePaper(found["id"]);
+                  }
+                }
+
+                setState(() {
+                  isSaved = false;
+                });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Removed from library ❌")),
+                );
+              }
             },
           ),
         ],
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 1000, // 👈 controls width on large screens
           ),
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 🔥 Title
-                Text(
-                  paper["titles"],
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+            child: Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🔥 Title
+                    Text(
+                      paper["titles"],
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    infoText("Category", paper["category"]),
+                    infoText("Terms", paper["terms"].toString()),
+                    infoText("First Author", paper["first_author"]),
+                    infoText("Authors", paper["authors"].toString()),
+                    infoText("Published Date", paper["published_date"]),
+
+                    const SizedBox(height: 16),
+
+                    const Text(
+                      "Summary",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      summary,
+                      style: const TextStyle(height: 1.6),
+                      textAlign: TextAlign.justify,
+                    ),
+                  ],
                 ),
-
-                const SizedBox(height: 16),
-
-                // 🔥 Info Section
-                infoText("Category", paper["category"]),
-                infoText("Terms", paper["terms"].toString()),
-                infoText("First Author", paper["first_author"]),
-                infoText("Authors", paper["authors"].toString()),
-                infoText("Published Date", paper["published_date"]),
-
-                const SizedBox(height: 16),
-
-                // 🔥 Summary Title
-                const Text(
-                  "Summary",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 8),
-
-                // 🔥 Summary Content
-                Text(
-                  summary,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.6,
-                    color: Colors.black87,
-                  ),
-                  textAlign: TextAlign.justify,
-                ),
-              ],
+              ),
             ),
           ),
         ),

@@ -161,7 +161,7 @@ def save_paper(data: SavePaperRequest, db: Session = Depends(get_db)):
     db.add(paper)
     db.commit()
 
-    return {"message": "Saved"}
+    return {"message": "Saved", "paper_id": paper.id}
 
 @app.get("/get-library/{user_id}")
 def get_library(user_id: int, db: Session = Depends(get_db)):

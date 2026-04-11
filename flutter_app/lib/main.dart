@@ -9,9 +9,15 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  Future<bool> checkLogin() async {
+  Future<Map?> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey("user_id");
+
+    if (!prefs.containsKey("user_id")) return null;
+
+    return {
+      "user_id": prefs.getInt("user_id"),
+      "username": prefs.getString("username"),
+    };
   }
 
   @override
@@ -19,19 +25,35 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Research Paper Recommender',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey[100],
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
       home: FutureBuilder(
-        future: checkLogin(),
+        future: getUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              body: Center(child: CircularProgressIndicator()), // ✅ loader
-            );
+            return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
 
-          final loggedIn = snapshot.data ?? false;
+          final user = snapshot.data;
 
-          return loggedIn ? HomeScreen.fromPrefs() : LoginScreen();
+          if (user == null) {
+            return LoginScreen(); // ❌ not logged in
+          }
+
+          return HomeScreen(
+            userId: user["user_id"],
+            username: user["username"] ?? "User",
+          );
         },
       ), // ✅ FIRST SCREEN
     );

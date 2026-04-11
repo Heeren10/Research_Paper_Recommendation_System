@@ -71,8 +71,8 @@ class ApiService {
     return res.statusCode == 200;
   }
 
-  static Future<void> savePaper(int userId, Map paper) async {
-    await http.post(
+  static Future<int?> savePaper(int userId, Map paper) async {
+    final res = await http.post(
       Uri.parse("$baseUrl/save-paper"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
@@ -86,6 +86,13 @@ class ApiService {
         "published_date": paper["published_date"],
       }),
     );
+
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      return data["paper_id"]; // ✅ correct
+    }
+
+    return null;
   }
 
   static Future<List> getLibrary(int userId) async {

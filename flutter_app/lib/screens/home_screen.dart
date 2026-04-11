@@ -45,15 +45,51 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Welcome, ${widget.username}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.blueAccent],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      widget.username[0].toUpperCase(),
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Welcome", style: TextStyle(color: Colors.white70)),
+                      Text(
+                        widget.username,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
+
+            SizedBox(height: 20),
+
             TextField(
               controller: controller,
               decoration: InputDecoration(
-                hintText: "Enter research topic",
+                hintText: "Search research papers...",
                 suffixIcon: IconButton(
                   icon: Icon(Icons.search),
                   onPressed: search,
@@ -80,6 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: Text("Library"),
               onTap: () {
+                if (widget.userId == 0) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("Please login first")));
+                  return;
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -48,25 +48,63 @@ class _UpdateScreenState extends State<UpdateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Update Profile")),
-      body: Padding(
-        padding: EdgeInsets.all(16),
+      appBar: AppBar(title: Text("Update Profile"), centerTitle: true),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
         child: Column(
           children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.blue,
+              child: Text(
+                username.text.isNotEmpty ? username.text[0].toUpperCase() : "U",
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+            ),
+
+            SizedBox(height: 20),
+
             TextField(
               controller: email,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(
+                labelText: "Email",
+                prefixIcon: Icon(Icons.email),
+              ),
             ),
+
+            SizedBox(height: 15),
+
             TextField(
               controller: username,
-              decoration: InputDecoration(labelText: "Username"),
+              decoration: InputDecoration(
+                labelText: "Username",
+                prefixIcon: Icon(Icons.person),
+              ),
             ),
+
+            SizedBox(height: 15),
+
             TextField(
               controller: password,
-              decoration: InputDecoration(labelText: "New Password"),
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "New Password",
+                prefixIcon: Icon(Icons.lock),
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(onPressed: update, child: Text("Update")),
+
+            SizedBox(height: 25),
+
+            ElevatedButton(
+              onPressed: update,
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text("Update Profile"),
+            ),
           ],
         ),
       ),
